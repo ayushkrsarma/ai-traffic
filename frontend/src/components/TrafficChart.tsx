@@ -10,6 +10,10 @@ const TrafficChart = ({ systemMode = 'auto' }: TrafficChartProps) => {
   const [loading, setLoading] = useState(true);
   const dataRef = useRef<any[]>([]);
 
+  const axisColor = 'red';
+  const gridColor = 'green';
+  const theme = 'dark'
+
   // Initialize with some historical data
   useEffect(() => {
     const initData = () => {
