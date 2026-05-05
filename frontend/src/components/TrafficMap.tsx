@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Car, Cpu, AlertTriangle, FastForward } from 'lucide-react';
+import { cn } from '../utils/cn';
 
 interface Vehicle {
   id: string;
@@ -16,13 +17,15 @@ interface TrafficMapProps {
   lon?: number;
   city?: string;
   systemMode?: 'auto' | 'manual' | 'emergency';
+  theme?: 'dark' | 'light';
 }
 
-const TrafficMap = ({ 
-  lat = 28.6139, 
-  lon = 77.2090, 
+const TrafficMap = ({
+  lat = 28.6139,
+  lon = 77.2090,
   city = 'New Delhi',
-  systemMode = 'auto'
+  systemMode = 'auto',
+  theme = 'dark'
 }: TrafficMapProps) => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [activeLane, setActiveLane] = useState<'NS' | 'EW'>('NS');
@@ -159,7 +162,7 @@ const TrafficMap = ({
   }, []); // Only start loop once on mount
 
   return (
-    <div className="relative w-full h-[600px] bg-[#0a0a0c] rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
+    <div className={cn("relative w-full h-[600px] rounded-3xl overflow-hidden border shadow-2xl", theme === 'dark' ? "bg-[#0a0a0c] border-white/5" : "bg-zinc-100 border-zinc-200")}>
       {/* HUD Overlays */}
       <div className="absolute top-6 left-6 z-30 space-y-3">
          <div className={`flex items-center gap-3 px-4 py-2 rounded-xl backdrop-blur-md border ${activeLane === 'NS' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-zinc-900/50 border-zinc-800 text-zinc-500'}`}>
@@ -195,14 +198,14 @@ const TrafficMap = ({
 
       {/* Realistic Map Background */}
       <div className="absolute inset-0 flex items-center justify-center opacity-40">
-         <div className="w-full h-40 bg-[#151518] relative">
-            <div className="absolute top-1/2 w-full h-px border-t-2 border-dashed border-zinc-700 -translate-y-1/2" />
+         <div className={cn("w-full h-40 relative", theme === 'dark' ? "bg-[#151518]" : "bg-zinc-300")}>
+            <div className={cn("absolute top-1/2 w-full h-px border-t-2 border-dashed -translate-y-1/2", theme === 'dark' ? "border-zinc-700" : "border-zinc-400")} />
          </div>
-         <div className="absolute w-40 h-full bg-[#151518]">
-            <div className="absolute left-1/2 h-full w-px border-l-2 border-dashed border-zinc-700 -translate-x-1/2" />
+         <div className={cn("absolute w-40 h-full", theme === 'dark' ? "bg-[#151518]" : "bg-zinc-300")}>
+            <div className={cn("absolute left-1/2 h-full w-px border-l-2 border-dashed -translate-x-1/2", theme === 'dark' ? "border-zinc-700" : "border-zinc-400")} />
          </div>
          {/* Intersection Markings */}
-         <div className="absolute w-40 h-40 border-4 border-zinc-800/50 z-10" />
+         <div className={cn("absolute w-40 h-40 border-4 z-10", theme === 'dark' ? "border-zinc-800/50" : "border-zinc-400/50")} />
       </div>
 
       {/* Traffic Signals Visuals */}
@@ -258,7 +261,7 @@ const TrafficMap = ({
         })}
       </AnimatePresence>
 
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-6 px-6 py-3 rounded-2xl bg-black/40 backdrop-blur-md border border-white/5 font-mono text-[10px] text-zinc-500 uppercase tracking-widest">
+      <div className={cn("absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-6 px-6 py-3 rounded-2xl backdrop-blur-md border font-mono text-[10px] uppercase tracking-widest", theme === 'dark' ? "bg-black/40 border-white/5 text-zinc-500" : "bg-white/80 border-zinc-200 text-zinc-500")}>
         <span className="text-blue-400 font-bold">{city}</span>
         <div className="w-1 h-1 rounded-full bg-zinc-700" />
         <span>LAT: {lat.toFixed(4)}°</span>

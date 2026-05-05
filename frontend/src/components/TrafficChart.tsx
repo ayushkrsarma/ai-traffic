@@ -1,18 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { cn } from '../utils/cn';
 
 interface TrafficChartProps {
     systemMode?: 'auto' | 'manual' | 'emergency';
+    theme?: 'dark' | 'light';
 }
 
-const TrafficChart = ({ systemMode = 'auto' }: TrafficChartProps) => {
+const TrafficChart = ({ systemMode = 'auto', theme = 'dark' }: TrafficChartProps) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const dataRef = useRef<any[]>([]);
 
-  const axisColor = 'red';
-  const gridColor = 'green';
-  const theme = 'dark'
+  const axisColor = theme === 'dark' ? '#52525b' : '#a1a1aa';
+  const gridColor = theme === 'dark' ? '#27272a' : '#e4e4e7';
 
   // Initialize with some historical data
   useEffect(() => {
@@ -71,7 +72,7 @@ const TrafficChart = ({ systemMode = 'auto' }: TrafficChartProps) => {
 
   if (loading) {
     return (
-      <div className="glass-card p-6 h-[300px] min-h-[300px] border-zinc-800 flex flex-col justify-center items-center">
+      <div className={cn("glass-card p-6 h-[300px] min-h-[300px] border flex flex-col justify-center items-center", theme === 'dark' ? "border-zinc-800" : "border-zinc-200")}>
         <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
         <p className="mt-4 text-zinc-500 text-sm">Initializing Simulator Stream...</p>
       </div>
@@ -79,12 +80,12 @@ const TrafficChart = ({ systemMode = 'auto' }: TrafficChartProps) => {
   }
 
   return (
-    <div id="traffic-chart-container" className="glass-card p-6 h-[300px] min-h-[300px] border-zinc-800 overflow-hidden">
+    <div id="traffic-chart-container" className={cn("glass-card p-6 h-[300px] min-h-[300px] overflow-hidden border", theme === 'dark' ? "border-zinc-800" : "border-zinc-200")}>
       <div className="flex items-center justify-between mb-4">
         <div>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            <h3 className="text-zinc-100 font-semibold uppercase text-xs tracking-widest">Live Telemetry Stream</h3>
+            <h3 className={cn("font-semibold uppercase text-xs tracking-widest", theme === 'dark' ? "text-zinc-100" : "text-zinc-800")}>Live Telemetry Stream</h3>
           </div>
           <p className="text-[10px] text-zinc-500 mt-1">Real-time Node throughput & Latency Simulator</p>
         </div>

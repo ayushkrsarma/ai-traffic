@@ -304,10 +304,13 @@ function App() {
                 <p className="text-zinc-400 mt-1">Autonomous intersection management at Sector 42 Grid.</p>
               </div>
               <div className="flex gap-3">
-                <button 
+                <button
                   onClick={handleExport}
                   disabled={isExporting}
-                  className="bg-zinc-900 hover:bg-zinc-800 text-sm font-medium px-4 py-2 rounded-lg border border-zinc-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className={cn(
+                    "text-sm font-medium px-4 py-2 rounded-lg border transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2",
+                    theme === 'dark' ? "bg-zinc-900 hover:bg-zinc-800 border-zinc-800" : "bg-white hover:bg-zinc-50 border-zinc-200 text-zinc-700"
+                  )}
                 >
                   {isExporting ? (
                     <>
@@ -365,11 +368,12 @@ function App() {
                    "glass-card p-6 border transition-all h-[400px]",
                    theme === 'dark' ? "border-zinc-800" : "border-zinc-200 bg-white shadow-sm"
                  )}>
-                   <TrafficMap 
-                      lat={appSettings?.lat} 
-                      lon={appSettings?.lon} 
-                      city={appSettings?.city} 
+                   <TrafficMap
+                      lat={appSettings?.lat}
+                      lon={appSettings?.lon}
+                      city={appSettings?.city}
                       systemMode={systemMode}
+                      theme={theme}
                    />
                  </div>
                  <div className={cn(
@@ -459,15 +463,16 @@ function App() {
         {activeTab === 'Monitor' && (
           <div className="p-8 space-y-8">
             <h2 className="text-3xl font-bold tracking-tight">System Monitor</h2>
-            <div className="glass-card p-6 border-zinc-800">
+            <div className={cn("glass-card p-6 border", theme === 'dark' ? "border-zinc-800" : "border-zinc-200 bg-white shadow-sm")}>
               <h3 className="text-xl font-semibold mb-4">Traffic Monitoring</h3>
-              <p className="text-zinc-400">Detailed real-time monitoring of all nodes and vehicle flow.</p>
+              <p className={cn(theme === 'dark' ? "text-zinc-400" : "text-zinc-500")}>Detailed real-time monitoring of all nodes and vehicle flow.</p>
               <div className="mt-8">
-                <TrafficMap 
-                  lat={appSettings?.lat} 
-                  lon={appSettings?.lon} 
-                  city={appSettings?.city} 
+                <TrafficMap
+                  lat={appSettings?.lat}
+                  lon={appSettings?.lon}
+                  city={appSettings?.city}
                   systemMode={systemMode}
+                  theme={theme}
                 />
               </div>
             </div>
@@ -649,14 +654,16 @@ function App() {
   );
 }
 
-const NavItem = ({ icon: Icon, label, active, onClick }: { icon: any, label: string, active: boolean, onClick: () => void }) => (
-  <button 
+const NavItem = ({ icon: Icon, label, active, onClick, theme = 'dark' }: { icon: any, label: string, active: boolean, onClick: () => void, theme?: 'dark' | 'light' }) => (
+  <button
     onClick={onClick}
     className={cn(
       "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200",
-      active 
-        ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20" 
-        : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+      active
+        ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
+        : theme === 'dark'
+          ? "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+          : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900"
     )}
   >
     <Icon className="w-5 h-5" />
@@ -664,56 +671,56 @@ const NavItem = ({ icon: Icon, label, active, onClick }: { icon: any, label: str
   </button>
 );
 
-const NotificationPanel = ({ notifications, onClear }: { notifications: any[], onClear: () => void }) => {
+const NotificationPanel = ({ notifications, onClear, theme = 'dark' }: { notifications: any[], onClear: () => void, theme?: 'dark' | 'light' }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="relative">
-      <button 
+      <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-zinc-400 hover:text-white transition-colors"
+        className={cn("relative p-2 transition-colors", theme === 'dark' ? "text-zinc-400 hover:text-white" : "text-zinc-500 hover:text-zinc-900")}
       >
         <Bell className="w-5 h-5" />
         {notifications.length > 0 && (
-          <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-zinc-950 animate-pulse" />
+          <span className={cn("absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 animate-pulse", theme === 'dark' ? "border-zinc-950" : "border-white")} />
         )}
       </button>
 
       {isOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-          <div className="absolute right-0 mt-2 w-80 glass-card border-zinc-800 shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-            <div className="p-4 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
+          <div className={cn("absolute right-0 mt-2 w-80 glass-card border shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200", theme === 'dark' ? "border-zinc-800" : "border-zinc-200")}>
+            <div className={cn("p-4 border-b flex justify-between items-center", theme === 'dark' ? "border-zinc-800 bg-zinc-900/50" : "border-zinc-200 bg-zinc-50")}>
               <h3 className="text-sm font-bold">System Alerts</h3>
-              <span className="text-[10px] bg-blue-600 px-2 py-0.5 rounded-full font-mono">{notifications.length} ACTIVE</span>
+              <span className="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-mono">{notifications.length} ACTIVE</span>
             </div>
             <div className="max-h-96 overflow-y-auto">
               {notifications.length === 0 ? (
-                <div className="p-8 text-center text-zinc-600 text-xs italic">
+                <div className="p-8 text-center text-zinc-500 text-xs italic">
                   No active system alerts.
                 </div>
               ) : (
                 notifications.map((n) => (
-                  <div key={n.id} className="p-4 border-b border-zinc-800 last:border-0 hover:bg-white/5 transition-colors group">
+                  <div key={n.id} className={cn("p-4 border-b last:border-0 transition-colors group", theme === 'dark' ? "border-zinc-800 hover:bg-white/5" : "border-zinc-100 hover:bg-zinc-50")}>
                     <div className="flex justify-between items-start mb-1">
                       <span className={cn(
                         "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md",
-                        n.priority === 'high' ? "bg-rose-500/20 text-rose-400 border border-rose-500/30" : 
-                        n.priority === 'medium' ? "bg-amber-500/20 text-amber-400 border border-amber-500/30" : 
-                        "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                        n.priority === 'high' ? "bg-rose-500/20 text-rose-500 border border-rose-500/30" :
+                        n.priority === 'medium' ? "bg-amber-500/20 text-amber-500 border border-amber-500/30" :
+                        "bg-blue-500/20 text-blue-500 border border-blue-500/30"
                       )}>
                         {n.event}
                       </span>
                       <span className="text-[10px] text-zinc-500 font-mono">{n.time}</span>
                     </div>
-                    <p className="text-xs text-zinc-300 leading-relaxed">{n.detail}</p>
+                    <p className={cn("text-xs leading-relaxed", theme === 'dark' ? "text-zinc-300" : "text-zinc-600")}>{n.detail}</p>
                   </div>
                 ))
               )}
             </div>
-            <button 
+            <button
               onClick={onClear}
-              className="w-full p-3 text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors bg-zinc-900/30 border-t border-zinc-800 uppercase tracking-widest font-bold"
+              className={cn("w-full p-3 text-[10px] transition-colors border-t uppercase tracking-widest font-bold", theme === 'dark' ? "text-zinc-500 hover:text-zinc-300 bg-zinc-900/30 border-zinc-800" : "text-zinc-400 hover:text-zinc-600 bg-zinc-50 border-zinc-200")}
             >
               Clear All Logs
             </button>
