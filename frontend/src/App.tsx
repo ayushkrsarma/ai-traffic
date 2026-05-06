@@ -366,7 +366,7 @@ function App() {
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
               <div className="lg:col-span-3 space-y-8">
                  <div className={cn(
-                   "glass-card p-6 border transition-all h-[400px]",
+                   "glass-card p-6 border transition-all h-[650px]",
                    theme === 'dark' ? "border-zinc-800" : "border-zinc-200 bg-white shadow-sm"
                  )}>
                    <TrafficMap
