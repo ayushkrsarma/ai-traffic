@@ -119,6 +119,7 @@ function App() {
   }, []);
 
   const [systemMode, setSystemMode] = useState<'auto' | 'manual' | 'emergency'>('auto');
+  const [manualActiveLane, setManualActiveLane] = useState<'NS' | 'EW'>('NS');
   const [notifications, setNotifications] = useState<any[]>([
     { id: Date.now(), time: new Date().toLocaleTimeString(), event: 'System Boot', detail: 'Intelligent Traffic Simulator Online', priority: 'low' }
   ]);
@@ -375,13 +376,15 @@ function App() {
                       city={appSettings?.city}
                       systemMode={systemMode}
                       theme={theme}
+                      realDensity={parseFloat(stats?.trafficDensity) || 50}
+                      forceLane={systemMode === 'manual' ? manualActiveLane : undefined}
                    />
                  </div>
                  <div className={cn(
                    "glass-card p-8 border transition-all",
                    theme === 'dark' ? "border-zinc-800" : "border-zinc-200 bg-white shadow-sm"
                  )}>
-                   <TrafficChart theme={theme} />
+                   <TrafficChart theme={theme} systemMode={systemMode} />
                  </div>
               </div>
 
@@ -423,14 +426,14 @@ function App() {
                         <User className="w-4 h-4" />
                         Manual
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleControl('emergency')}
                         className={cn(
                           "w-full py-4 rounded-xl text-sm font-bold transition-all duration-300 border flex items-center justify-center gap-3",
                           systemMode === 'emergency'
                             ? "bg-rose-600 border-rose-500 text-white shadow-lg shadow-rose-500/30 animate-pulse"
-                            : theme === 'dark' 
-                              ? "bg-zinc-900 border-zinc-800 text-rose-500/60 hover:border-rose-500/50" 
+                            : theme === 'dark'
+                              ? "bg-zinc-900 border-zinc-800 text-rose-500/60 hover:border-rose-500/50"
                               : "bg-zinc-50 border-zinc-200 text-rose-500/70 hover:border-rose-400 hover:bg-zinc-100"
                         )}
                       >
@@ -438,6 +441,37 @@ function App() {
                         Emergency
                       </button>
                     </div>
+
+                    {/* Manual signal control — visible only in manual mode */}
+                    {systemMode === 'manual' && (
+                      <div className={cn("mt-4 pt-4 border-t", theme === 'dark' ? "border-zinc-800" : "border-zinc-200")}>
+                        <p className={cn("text-[10px] font-bold uppercase tracking-widest mb-3", theme === 'dark' ? "text-zinc-500" : "text-zinc-400")}>Signal Control</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            onClick={() => setManualActiveLane('NS')}
+                            className={cn(
+                              "py-3 rounded-xl text-xs font-bold border transition-all",
+                              manualActiveLane === 'NS'
+                                ? "bg-emerald-600 border-emerald-500 text-white shadow-lg shadow-emerald-500/30"
+                                : theme === 'dark' ? "bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-emerald-500/50" : "bg-zinc-50 border-zinc-200 text-zinc-500 hover:border-emerald-400"
+                            )}
+                          >
+                            N↕S Green
+                          </button>
+                          <button
+                            onClick={() => setManualActiveLane('EW')}
+                            className={cn(
+                              "py-3 rounded-xl text-xs font-bold border transition-all",
+                              manualActiveLane === 'EW'
+                                ? "bg-emerald-600 border-emerald-500 text-white shadow-lg shadow-emerald-500/30"
+                                : theme === 'dark' ? "bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-emerald-500/50" : "bg-zinc-50 border-zinc-200 text-zinc-500 hover:border-emerald-400"
+                            )}
+                          >
+                            E↔W Green
+                          </button>
+                        </div>
+                      </div>
+                    )}
                  </div>
 
                  <div className={cn(
