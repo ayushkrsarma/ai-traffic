@@ -1,34 +1,29 @@
 import express from 'express';
-import { getTrafficFlow, getTrafficIncidents } from '../services/tomtom.js';
+import { getTrafficFlow, getTrafficIncidents } from '../services/here.js';
 
 const router = express.Router();
 
 router.get('/flow', async (req, res) => {
-  const { lat, lon } = req.query;
-  if (!lat || !lon) {
-    return res.status(400).json({ error: 'Latitude and Longitude are required' });
-  }
+  const { lat, lon, radius = 500 } = req.query;
+  if (!lat || !lon) return res.status(400).json({ error: 'lat and lon are required' });
 
   try {
-    const data = await getTrafficFlow(lat, lon);
+    const data = await getTrafficFlow(Number(lat), Number(lon), Number(radius));
     res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch traffic flow' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch traffic flow', detail: err.message });
   }
 });
 
 router.get('/incidents', async (req, res) => {
-  const { bbox } = req.query; // Expecting comma separated values
-  if (!bbox) {
-    return res.status(400).json({ error: 'Bounding box (bbox) is required' });
-  }
+  const { lat, lon, radius = 2000 } = req.query;
+  if (!lat || !lon) return res.status(400).json({ error: 'lat and lon are required' });
 
   try {
-    const bboxArray = bbox.split(',').map(Number);
-    const data = await getTrafficIncidents(bboxArray);
+    const data = await getTrafficIncidents(Number(lat), Number(lon), Number(radius));
     res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch traffic incidents' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch traffic incidents', detail: err.message });
   }
 });
 
