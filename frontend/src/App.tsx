@@ -15,6 +15,7 @@ import {
   MapPin
 } from 'lucide-react';
 import TrafficMap from './components/TrafficMap';
+import LiveTrafficMap from './components/LiveTrafficMap';
 import StatusCard from './components/StatusCard';
 import TrafficChart from './components/TrafficChart';
 import { CITY_PRESETS, Intersection } from './utils/locations';
@@ -461,21 +462,25 @@ function App() {
         )}
 
         {activeTab === 'Monitor' && (
-          <div className="p-8 space-y-8">
-            <h2 className="text-3xl font-bold tracking-tight">System Monitor</h2>
-            <div className={cn("glass-card p-6 border", theme === 'dark' ? "border-zinc-800" : "border-zinc-200 bg-white shadow-sm")}>
-              <h3 className="text-xl font-semibold mb-4">Traffic Monitoring</h3>
-              <p className={cn(theme === 'dark' ? "text-zinc-400" : "text-zinc-500")}>Detailed real-time monitoring of all nodes and vehicle flow.</p>
-              <div className="mt-8">
-                <TrafficMap
-                  lat={appSettings?.lat}
-                  lon={appSettings?.lon}
-                  city={appSettings?.city}
-                  systemMode={systemMode}
-                  theme={theme}
-                />
+          <div className="p-8 space-y-6">
+            <div className="flex items-end justify-between">
+              <div>
+                <h2 className="text-3xl font-bold tracking-tight">Live Traffic Monitor</h2>
+                <p className={cn("mt-1 text-sm", theme === 'dark' ? "text-zinc-400" : "text-zinc-500")}>
+                  Real-time road conditions powered by HERE Traffic API
+                </p>
+              </div>
+              <div className={cn("flex items-center gap-2 text-xs px-3 py-1.5 rounded-full border font-mono", theme === 'dark' ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" : "border-emerald-500/30 bg-emerald-50 text-emerald-600")}>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                HERE API · Refreshes every 30s
               </div>
             </div>
+            <LiveTrafficMap
+              lat={appSettings?.lat}
+              lon={appSettings?.lon}
+              city={appSettings?.city}
+              theme={theme}
+            />
           </div>
         )}
 
